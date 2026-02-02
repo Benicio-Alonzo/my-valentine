@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffe6e6; 
+            font-family: 'Arial', sans-serif;
+            overflow: hidden; 
+            position: relative; 
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 10; 
+            max-width: 90%;
+        }
+
+        /* Standard Images */
+        .img-container img {
+            width: 250px; 
+            height: auto;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        /* Success Image - Made MUCH Bigger */
+        #success-img {
+            width: 500px; /* Doubled from 250px */
+            max-width: 100%; /* Ensures it fits on mobile screens */
+        }
+
+        /* The Growing Chaos Image */
+        #growing-image {
+            display: none; 
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); 
+            z-index: 1; 
+            opacity: 0.8;
+            pointer-events: none; 
+        }
+
+        h1 {
+            color: #ff4d4d;
+            font-size: 2.5rem; 
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.8);
+            transition: all 0.2s ease; 
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        #yesBtn {
+            background-color: #ff4d4d;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.4);
+            z-index: 20;
+        }
+
+        #yesBtn:hover {
+            background-color: #e60000;
+            transform: scale(1.1);
+        }
+
+        #noBtn {
+            background-color: white;
+            color: #ff4d4d;
+            border: 2px solid #ff4d4d;
+            position: relative; 
+            z-index: 20;
+        }
+
+        #success-message {
+            display: none;
+            color: #ff4d4d;
+        }
+    </style>
+</head>
+<body>
+
+    <img id="growing-image" src="grow.jpg" alt="Chaos">
+
+    <div class="container">
+        <div id="question-box">
+            <div class="img-container" id="start-img-container">
+                <img src="start.jpg" alt="Please?">
+            </div>
+            
+            <h1 id="main-text">Will you be my Valentine? 💖</h1>
+            
+            <div class="btn-container">
+                <button id="yesBtn">Yes</button>
+                <button id="noBtn">No</button>
+            </div>
+        </div>
+
+        <div id="success-message">
+            <div class="img-container">
+                <img id="success-img" src="success.jpg" alt="Yay!">
+            </div>
+            <h1>Oh so you actaully love me or something 🥰</h1>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const questionBox = document.getElementById('question-box');
+        const successMessage = document.getElementById('success-message');
+        const growingImage = document.getElementById('growing-image');
+        const mainText = document.getElementById('main-text');
+        const startImgContainer = document.getElementById('start-img-container');
+
+        let imageSize = 100; // Starting size of the screaming image
+        let clickCount = 0; 
+
+        // The comments that cycle through as they chase the button
+        const messages = [
+            "Hey! What are u doing?? 🤨",
+            "Stop! I'm gonna scream! 😱",
+            "AAAAAAAHHHHHHH!!!",
+            "LOOK AT ME SCREAMING!!",
+            "Why are you doing this to me? ",
+            "WHAT AM I GONNA TELL MY MOM",
+            "POOKIE DONT DO THIS TO ME",
+            "Please... I'm begging you 💀"
+        ];
+
+        function moveButton() {
+            // 1. Move the button
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+            const randomX = Math.random() * (windowWidth - btnWidth);
+            const randomY = Math.random() * (windowHeight - btnHeight);
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+
+            // 2. Spawn / Grow the image
+            if (growingImage.style.display === 'none' || growingImage.style.display === '') {
+                // FIRST TIME TRIGGER:
+                growingImage.style.display = 'block';
+                growingImage.style.width = imageSize + 'px';
+                
+                // Hide the static SpongeBob image immediately
+                startImgContainer.style.display = 'none';
+            } else {
+                imageSize += 70; 
+                growingImage.style.width = imageSize + 'px';
+            }
+
+            // 3. Update the text
+            if (clickCount < messages.length) {
+                mainText.innerText = messages[clickCount];
+                clickCount++;
+            }
+        }
+
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('click', moveButton);
+        noBtn.addEventListener('touchstart', moveButton);
+
+        yesBtn.addEventListener('click', () => {
+            questionBox.style.display = 'none';
+            growingImage.style.display = 'none'; 
+            successMessage.style.display = 'block';
+        });
+    </script>
+
+</body>
+</html>
